@@ -11,8 +11,9 @@ module.exports = function(deployer) {
       return deployer.deploy(BiathlonNode, Nodelist.address, 'Test node', 'Helsinki')
     .then(function() {
       return deployer.deploy(BiathlonToken, BiathlonNode.address, 'Test token', 'Tt', 2)
-    .then(function() {
-      console.log("biathlon deploy address is " + BiathlonNode.address + ' with ' + Nodelist.address);
+    .then(function(c) {
+    
+      console.log("biathlon deploy address is " + BiathlonNode.address + ' with ' + BiathlonNode.nodelist_address);
       console.log("Token deploy address is " + BiathlonToken.address + ' with ' + BiathlonToken.node_address);
       });
 

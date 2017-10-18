@@ -2,10 +2,12 @@ const Nodelist = artifacts.require("./Nodelist.sol");
 const BiathlonNode = artifacts.require("./BiathlonNode.sol");
 const BiathlonToken = artifacts.require("./BiathlonToken.sol");
 const Ownable = artifacts.require('../contracts/ownership/Ownable.sol');
-// ... more code
+const MintableToken = artifacts.require('../contracts/token/MintableToken.sol');
+
+
 let nl;
 let bn;
-
+let bt;
 
 contract('BiathlonToken', function(accounts) {
 
@@ -27,8 +29,11 @@ contract('BiathlonToken', function(accounts) {
     assert.equal(node, bna, "Token was not initialised to correct node");
   });
 
+
+
   it('should mint a given amount of tokens to a given address', async function() {
-    const result = await bt.mint(accounts[0], 100);
+
+    let result = await bt.mint(accounts[0], 100, { from: accounts[0] });
     assert.equal(result.logs[0].event, 'Mint');
     assert.equal(result.logs[0].args.to.valueOf(), accounts[0]);
     assert.equal(result.logs[0].args.amount.valueOf(), 100);
@@ -43,7 +48,7 @@ contract('BiathlonToken', function(accounts) {
   })
 
   it('should allow owner to mint 50 to account #2', async function() {
-    const result = await bt.mint(accounts[2], 50);
+    let result = await bt.mint(accounts[2], 50);
     assert.equal(result.logs[0].event, 'Mint');
     assert.equal(result.logs[0].args.to.valueOf(), accounts[2]);
     assert.equal(result.logs[0].args.amount.valueOf(), 50);
@@ -55,6 +60,12 @@ contract('BiathlonToken', function(accounts) {
 
   });
 
+  it('should have account #2 on registry after first token minting', async function() {
+    let check_user = await nl.users(accounts[2]);
+    assert(check_user, bn.address);
+  });
+
+  
   it('should not allow non-owners to mint', async function() {
     try {
       let minttask = await bt.mint(accounts[2], 50, {from: accounts[1]});
@@ -65,4 +76,18 @@ contract('BiathlonToken', function(accounts) {
     }
     assert.fail("Expected to reject minting from non-owner");
   });
+})
+
+contract('Nodelist', function(accounts) {
+  beforeEach(async function() {
+    bn = await BiathlonNode.deployed();
+    nl = await Nodelist.deployed();
+    bt = await BiathlonToken.deployed();
+  });
+  //
+  // it('should be able to see user account with a balance on any nodes', async function() {
+  //
+  //
+  // });
+
 })

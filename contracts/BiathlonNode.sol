@@ -7,32 +7,41 @@ contract BiathlonNode is Ownable {
   address public nodelist_address;
   string public name;
   string public location;
+  Nodelist nodelist;
 
 
-  event SetNodelistAddress(address nla);
 
   function BiathlonNode(address _nodelist, string _name, string _location) {
     nodelist_address = _nodelist;
     name = _name;
     location = _location;
-
+    nodelist = Nodelist(nodelist_address);
   }
 
   function get_config() external returns(address) {
     return nodelist_address;
   }
 
-  function setNodelistAddress(address _nlAddress)  external returns (bool){
-    assert(_nlAddress != address(0));
-    nodelist_address = _nlAddress;
-    /*cont = Nodelist(_nlAddress);*/
-    SetNodelistAddress(_nlAddress);
+
+  function register_user(address _user) public returns (bool) {
+
+    require(nodelist.find_and_or_register_user(_user, this) != address(0));
+
     return true;
+
+
+  }
+
+  function register_minting(address _addr) public returns (uint) {
+
+    nodelist.find_and_or_register_user(_addr, this);
+    return nodelist.count_users();
+    /*return true;*/
   }
 
   function connect_to_nodelist() public returns(bool) {
-    Nodelist nodelist = Nodelist(nodelist_address);
-    nodelist.register_node(name);
+
+    nodelist.register_node(this, name);
     return true;
 
   }

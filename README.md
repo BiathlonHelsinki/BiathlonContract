@@ -12,7 +12,7 @@ This is very much an early work in progress and nowhere near ready for productio
 ## How it should work
 
 ### Nodelist
-The "master" Biathlon nodelist is not yet deployed on Ethereum, but will be hopefully in early 2018. This is a contract that will catalogue the nodes of Biathlo.
+The "master" Biathlon nodelist is not yet deployed on Ethereum, but will be hopefully in early 2018. This is a contract that will catalogue the nodes of Biathlon.
 
 ### BiathlonNode
 Any individuals, organisations or initiatives wishing to participate in Biathlon can deploy a BiathlonNode contract, pointing to the master Nodelist address (not yet available) and registering their initiative on the Nodelist.
