@@ -24,7 +24,6 @@ contract('BiathlonNode', function(accounts) {
     let registration = await bn.connect_to_nodelist();
     let new_node_count = await nl.count_nodes();
     assert.equal(new_node_count, 1, "Nodelist array doesn't have deployed Node");
-
   });
 
   it("should be able to register a user into the Nodelist", async function() {
@@ -46,18 +45,7 @@ contract('BiathlonNode', function(accounts) {
       return;
     }
     assert.fail("Expected to reject duplicate registration");
-
   });
 
-  // it('should be able to register a user on the Nodelist', async function() {
-  //   let register_user = await bn.register_user(accounts[3]);
-  //   let fru = await nl.find_and_or_register_user(accounts[3]);
-  //   assert(bn.address, fru);
-  // });
 
-
-  //
-  // if('should be able to look for a user on the Nodelist', async function() {
-  //
-  // });
 })

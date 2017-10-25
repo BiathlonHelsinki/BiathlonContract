@@ -3,11 +3,13 @@ import "../contracts/BiathlonNode.sol";
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 
-contract Nodelist  is Ownable  {
+contract Nodelist is Ownable  {
   /*mapping(address=>string) public nodes;*/
   struct Entry  {
     address addr;
     string name;
+    bool active;
+    address migrated;
   }
   mapping(address => Entry) public entries;
 
@@ -17,6 +19,8 @@ contract Nodelist  is Ownable  {
   mapping(address => address) public users;
   event RegisterBiathlonNode(address addr);
   event RegisterBiathlonUser(address addr);
+  event LogAddress(address addr);
+  event LogString(string s);
 
   function count_nodes() public constant returns(uint) {
     return nodes.length;
@@ -26,13 +30,16 @@ contract Nodelist  is Ownable  {
     return user_list.length;
   }
 
-  function register_node(address _addr, string _name) public returns(address addr, string name) {
-    require(sha3(_name) != sha3(''));
-    require(sha3(entries[_addr].name) == sha3(''));
-    Entry memory this_node = Entry(_addr, _name);
-    entries[_addr] = this_node;
+  function register_node(string _name) public returns(address addr, string name) {
+    require(keccak256(_name) != keccak256(''));
+    require(keccak256(entries[msg.sender].name) == keccak256(''));
+    Entry memory this_node = Entry(msg.sender, _name, true, address(0));
+    entries[msg.sender] = this_node;
+    LogAddress(msg.sender);
+    LogString(_name);
+
     nodes.push(this_node);
-    RegisterBiathlonNode(_addr);
+    RegisterBiathlonNode(msg.sender);
     return (this_node.addr, this_node.name);
 
   }
