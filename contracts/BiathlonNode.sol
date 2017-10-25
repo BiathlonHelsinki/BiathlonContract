@@ -78,6 +78,18 @@ contract BiathlonNode is Ownable {
     return true;
   }
 
+  function transfer_token_ownership(address _new) external returns (bool) {
+    /* allow either the owner of the node or the nodelist to perform this */
+    require(msg.sender == owner || msg.sender == nodelist_address);
+    for(uint i = 0; i<tokenlist.length; i++) {
+      if(tokenlist[i].active == true) {
+        BiathlonToken t = BiathlonToken(tokenlist[i].addr);
+        t.transferOwnership(_new);
+      }
+    }
+    return true;
+  }
+
   function register_minting(address _addr) public returns (uint) {
 
     nodelist.find_and_or_register_user(_addr, this);

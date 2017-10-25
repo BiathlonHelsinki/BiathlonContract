@@ -21,19 +21,20 @@ module.exports = async function(deployer) {
     .then(async function() {
        c = await BiathlonToken.deployed();
         sa = await c.storage_address.call();
-        console.log('sa is ' + sa);
-        let ts = await TokenStorage.at(sa);
-        console.log('ts is ' + ts);
-        let tsowner = await ts.owner();
-        console.log('owner is ' + tsowner);
-        console.log("biathlon deploy address is " + BiathlonNode.address);
-        console.log("Token deploy address is " + BiathlonToken.address);
-        console.log("Token storage address is " + sa);
+        // console.log('sa is ' + sa);
+        // let ts = await TokenStorage.at(sa);
+        // console.log('ts is ' + ts);
+        // let tsowner = await ts.owner();
+        // console.log('owner is ' + tsowner);
+        // console.log("biathlon deploy address is " + BiathlonNode.address);
+        // console.log("Token deploy address is " + BiathlonToken.address);
+        // console.log("Token storage address is " + sa);
         })
       .then(function() {
-        return deployer.deploy(SecondNode, Nodelist.address, 'Second node', 'Elsehwere', {from: web3.eth.accounts[8]})
+        return deployer.deploy(SecondNode, Nodelist.address, 'Second node', 'Elsehwere', {from: web3.eth.accounts[6]})
       .then(function() {
-        console.log('sa is still ' + sa);
+        console.log('Second node is ' + SecondNode.address);
+
         return deployer.deploy(SecondBiathlonToken, BiathlonNode.address, 'Second test token', 'St', 2, sa)
       .then(function() {
         console.log("Second token deploy address is " + SecondBiathlonToken.address + ' with ' + SecondBiathlonToken.node_address);

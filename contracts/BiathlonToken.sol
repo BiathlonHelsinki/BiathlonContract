@@ -116,4 +116,13 @@ contract BiathlonToken is Ownable {
     return true;
   }
 
+  // Allow the token contract itself to transfer between users, so users don't require eth.
+  // This, of course, means someone could bankrupt a node by sending tokens back and forth.
+  // Security must be in place at the API/node level to prevent this (maybe by limiting the
+  // # of transfers per day)?
+
+  function biathlon_transfer(address _from, address _to, uint256 _value) onlyOwner whenActive returns (bool success) {
+    token.transferFrom(_from, _to, _value);
+    return true;
+  }
 }

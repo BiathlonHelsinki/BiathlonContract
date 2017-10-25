@@ -1,5 +1,6 @@
 const Nodelist = artifacts.require("./Nodelist.sol");
 const BiathlonNode = artifacts.require("./BiathlonNode.sol");
+const SecondNode = artifacts.require("./SecondNode.sol");
 const BiathlonToken = artifacts.require("./BiathlonToken.sol");
 const Ownable = artifacts.require('../contracts/ownership/Ownable.sol');
 const MintableToken = artifacts.require('../contracts/Token/MintableToken.sol');
@@ -17,6 +18,7 @@ contract('BiathlonToken', function(accounts) {
     nl = await Nodelist.deployed();
     bt = await BiathlonToken.deployed();
     st = await SecondBiathlonToken.deployed();
+    sn = await SecondNode.deployed();
   });
 
 
@@ -166,23 +168,29 @@ contract('BiathlonToken', function(accounts) {
 
   it('should allow minting more tokens to accounts', async function() {
     let newmint = await st.mint(accounts[2], 3);
-    // let getbalance = await st.balanceOf(accounts[2]);
-    // let totalsupply = await st.totalSupply();
-    // assert.equal(totalsupply, 128);
-    // assert.equal(getbalance, 28);
-  })
-})
-
-contract('Nodelist', function(accounts) {
-  beforeEach(async function() {
-    bn = await BiathlonNode.deployed();
-    nl = await Nodelist.deployed();
-    bt = await BiathlonToken.deployed();
+    let getbalance = await st.balanceOf(accounts[2]);
+    let totalsupply = await st.totalSupply();
+    assert.equal(totalsupply, 128);
+    assert.equal(getbalance, 28);
   });
-  //
-  // it('should be able to see user account with a balance on any nodes', async function() {
-  //
-  //
-  // });
 
-})
+  it('should be able to transfer as contract owner from one account to another', async function() {
+    let thetransfer = await st.biathlon_transfer(accounts[2], accounts[3], 2);
+    let getbalance2 = await st.balanceOf(accounts[2]);
+    let getbalance3 = await st.balanceOf(accounts[3]);
+    assert.equal(getbalance2, 26);
+    assert.equal(getbalance3, 2);
+  });
+
+  it('should not be able to transfer as non-owner from one account to another', async function() {
+    try {
+      let thetransfer = await st.biathlon_transfer(accounts[3], accounts[4], 1, {from: accounts[1]});
+    } catch(error) {
+      const invalidJump = error.message.search('invalid opcode') >= 0;
+      assert(invalidJump, "Expected throw, got '" + error + "' instead");
+      return;
+    }
+    assert.fail("Expected to reject transfering from non-owner");
+  })
+
+});
