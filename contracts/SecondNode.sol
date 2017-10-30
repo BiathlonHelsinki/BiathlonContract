@@ -38,7 +38,7 @@ contract SecondNode is Ownable {
   function count_tokens() public constant returns(uint) {
     return tokenlist.length;
   }
-  
+
   function transfer_token_ownership(address _new) onlyOwner external returns (bool) {
     for(uint i = 0; i<tokenlist.length; i++) {
       if(tokenlist[i].active == true) {
@@ -53,6 +53,17 @@ contract SecondNode is Ownable {
     require(nodelist.find_and_or_register_user(_user, this) != address(0));
     return true;
   }
+
+
+  function change_nodelist(address _to) public returns(bool) {
+    // if the nodelist is upgrade, the nodelist itself will iterate through each
+    // node and call this function
+    require(msg.sender == nodelist_address);
+    nodelist_address = _to;
+    nodelist = Nodelist(_to);
+    return true;
+  }
+
 
   function register_token(address _addr, string _name) public returns(address _a, string _n) {
     require(sha3(_name) != sha3(''));

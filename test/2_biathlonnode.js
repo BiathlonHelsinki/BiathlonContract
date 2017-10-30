@@ -1,9 +1,11 @@
 const Nodelist = artifacts.require("./Nodelist.sol");
 const BiathlonNode = artifacts.require("./BiathlonNode.sol");
-const Ownable = artifacts.require('../contracts/ownership/Ownable.sol');
+// const Ownable = artifacts.require('../contracts/ownership/Ownable.sol');
 const SecondNode = artifacts.require("./SecondNode.sol");
 const SecondBiathlonToken = artifacts.require("./SecondBiathlonToken.sol");
 const BiathlonToken = artifacts.require("./BiathlonToken.sol");
+const UpgradedNodelist = artifacts.require("./UpgradedNodelist.sol");
+
 // ... more code
 let nl;
 let bn;
@@ -16,6 +18,7 @@ contract('BiathlonNode', function(accounts) {
     bn = await BiathlonNode.deployed();
     nl = await Nodelist.deployed();
     sn = await SecondNode.deployed();
+    unl = await UpgradedNodelist.deployed();
   });
 
 
@@ -75,5 +78,29 @@ contract('BiathlonNode', function(accounts) {
     assert.equal(1, count_nodes, 'Still should only be one node!');
   });
 
+  // now let's try to upgrade the nodelist itself
+  it('should not allow the nodelist to be upgraded by anybody', async function() {
+    try {
+      let upgrade = await nl.upgrade_self(unl.address, {from: accounts[3]});
+    } catch (error) {
+      const invalidJump = error.message.search('invalid opcode') >= 0;
+      assert(invalidJump, "Expected throw, got '" + error + "' instead");
+      return;
+    }
+    assert.fail("Expected to reject nodelist upgrade from msg.sender who is not nodelist owner");
+  });
 
+  it('should allow the upgrade though from self', async function() {
+    let upgrade = await nl.upgrade_self(unl.address, {from: accounts[8]});
+    //  check node_address on old nodes
+    // should only upgrade current node
+    let bn1 = await bn.nodelist_address.call();
+    let bn2 = await sn.nodelist_address.call();
+    assert.notEqual(bn1, unl.address);
+    assert.equal(bn2, unl.address);
+    let active = await unl.is_current.call();
+    let inactive = await nl.is_current.call();
+    assert.isTrue(active);
+    assert.isFalse(inactive);
+  })
 });

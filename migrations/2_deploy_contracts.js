@@ -3,9 +3,9 @@ const BiathlonNode = artifacts.require("./BiathlonNode.sol");
 
 const SecondNode = artifacts.require("./SecondNode.sol");
 const BiathlonToken = artifacts.require("./BiathlonToken.sol");
-const SecondBiathlonToken = artifacts.require("./SecondBiathlonToken.sol")
-const TokenStorage = artifacts.require("./TokenStorage.sol")
-
+const SecondBiathlonToken = artifacts.require("./SecondBiathlonToken.sol");
+const TokenStorage = artifacts.require("./TokenStorage.sol");
+const UpgradedNodelist = artifacts.require("./UpgradedNodelist");
 
 module.exports = async function(deployer) {
   var sa;
@@ -33,12 +33,16 @@ module.exports = async function(deployer) {
       .then(function() {
         return deployer.deploy(SecondNode, Nodelist.address, 'Second node', 'Elsehwere', {from: web3.eth.accounts[6]})
       .then(function() {
-        console.log('Second node is ' + SecondNode.address);
+        // console.log('Second node is ' + SecondNode.address);
 
         return deployer.deploy(SecondBiathlonToken, BiathlonNode.address, 'Second test token', 'St', 2, sa)
       .then(function() {
-        console.log("Second token deploy address is " + SecondBiathlonToken.address + ' with ' + SecondBiathlonToken.node_address);
-        });
+        // console.log("Second token deploy address is " + SecondBiathlonToken.address + ' with ' + SecondBiathlonToken.node_address);
+        return deployer.deploy(UpgradedNodelist,  {from: web3.eth.accounts[8]})
+        })
+        .then(function() {
+          // console.log('Second nodelist is ' + UpgradedNodelist.address);
+        })
       });
     });
     });
