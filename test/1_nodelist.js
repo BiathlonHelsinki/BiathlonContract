@@ -20,6 +20,12 @@ contract('Nodelist', function(accounts) {
     assert(bna, nla); //, "BiathlonNode isn't initialized with correct address");
   })
 
+  it('should be active after initialisation', async function() {
+    let active = await nl.is_current.call();
+    
+    assert.isTrue(active);
+  });
+
   it('should not allow non-nodes to register a user on the Nodelist', async function() {
     nl = await Nodelist.deployed();
     try {

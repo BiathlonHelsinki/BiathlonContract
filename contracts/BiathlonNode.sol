@@ -56,6 +56,16 @@ contract BiathlonNode is Ownable {
 
   }
 
+  function change_nodelist(address _to) public returns(bool) {
+    // if the nodelist is upgrade, the nodelist itself will iterate through each
+    // node and call this function
+    require(msg.sender == nodelist_address);
+    nodelist_address = _to;
+    nodelist = Nodelist(_to);
+    return true;
+  }
+
+
   function upgrade_token(address _from, address _to, string _name) public returns(bool) {
     require(tokens[_from].addr != address(0));
     tokens[_from].active = false;

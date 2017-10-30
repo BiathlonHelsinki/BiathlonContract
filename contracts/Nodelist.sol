@@ -4,7 +4,7 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 
 contract Nodelist is Ownable  {
-  /*mapping(address=>string) public nodes;*/
+  bool public current;
   struct Entry  {
     address addr;
     string name;
@@ -14,12 +14,19 @@ contract Nodelist is Ownable  {
   mapping(address => Entry) public entries;
   mapping(address => address) public users;
 
+
+
+  function Nodelist() {
+    current = true;
+  }
+
   Entry[] public nodes;
   address[] public user_list;
 
   event RegisterBiathlonNode(address addr);
   event RegisterBiathlonUser(address addr);
   event UpgradeNode(address from, address to, string n);
+  event UpgradeNodelist(address from, address to);
 
   function look_for_node(address addr) public constant returns(string name, bool active, address migrated) {
     if (entries[addr].addr != address(0)) {
@@ -29,6 +36,9 @@ contract Nodelist is Ownable  {
     }
   }
 
+  function is_current() public constant returns(bool) {
+    return current;
+  }
   function count_nodes() public constant returns(uint) {
     return nodes.length;
   }
@@ -46,6 +56,17 @@ contract Nodelist is Ownable  {
     RegisterBiathlonNode(msg.sender);
     return (this_node.addr, this_node.name);
 
+  }
+
+  function upgrade_self(address _to) onlyOwner returns(bool) {
+    // Allow this nodelist contract itself to migrated
+    // Go through every node and set their node_address to the new one
+    for(uint i = 0; i<nodes.length; i++) {
+      BiathlonNode n = BiathlonNode(nodes[i].addr);
+      n.change_nodelist(_to);
+    }
+    UpgradeNodelist(this, _to);
+    current = false;
   }
 
   function upgrade_node(address _from, address _to, string _newname) public returns(bool) {
