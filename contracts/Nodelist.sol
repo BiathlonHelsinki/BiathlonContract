@@ -2,7 +2,6 @@ pragma solidity ^0.4.4;
 import "../contracts/BiathlonNode.sol";
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
-
 contract Nodelist is Ownable  {
   bool public current;
   struct Entry  {

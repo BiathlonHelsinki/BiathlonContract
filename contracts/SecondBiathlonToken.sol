@@ -3,6 +3,7 @@ import "../contracts/BiathlonNode.sol";
 import "../contracts/Nodelist.sol";
 import "../contracts/TokenStorage.sol";
 
+
 contract SecondBiathlonToken is Ownable {
 
   address public node_address;
