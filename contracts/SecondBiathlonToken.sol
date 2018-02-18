@@ -48,7 +48,7 @@ contract SecondBiathlonToken is Ownable {
     _;
   }
 
-  function SecondBiathlonToken(address _node_address, string _name, string _symbol, uint256 _decimals, address _upgradeFrom) onlyOwner {
+  function SecondBiathlonToken(address _node_address, string _name, string _symbol, uint256 _decimals, address _upgradeFrom) onlyOwner public {
     node_address = _node_address;
     name = _name;
     symbol = _symbol;
@@ -122,7 +122,7 @@ contract SecondBiathlonToken is Ownable {
   // Security must be in place at the API/node level to prevent this (maybe by limiting the
   // # of transfers per day)?
 
-  function biathlon_transfer(address _from, address _to, uint256 _value) onlyOwner whenActive returns (bool success) {
+  function biathlon_transfer(address _from, address _to, uint256 _value) onlyOwner whenActive public  returns (bool success) {
     token.transferFrom(_from, _to, _value);
     return true;
   }

@@ -2,8 +2,9 @@ module.exports = {
   networks: {
     development: {
       host: "localhost",
-      port: 8446,
-      network_id: "1337" // Match any network id
+      port: 7545,
+      network_id: "1337",
+      gas: 4600000
     },
     ropsten: {
       host: "localhost", // Connect to geth on the specified
@@ -16,3 +17,7 @@ module.exports = {
   
   }
 };
+require('babel-register')({
+    ignore: /node_modules\/(?!zeppelin-solidity)/
+});
+require('babel-polyfill')

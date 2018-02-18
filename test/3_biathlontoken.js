@@ -3,13 +3,16 @@ const BiathlonNode = artifacts.require("./BiathlonNode.sol");
 const SecondNode = artifacts.require("./SecondNode.sol");
 const BiathlonToken = artifacts.require("./BiathlonToken.sol");
 const Ownable = artifacts.require('../contracts/ownership/Ownable.sol');
-const MintableToken = artifacts.require('../contracts/Token/MintableToken.sol');
+
+// const MintableToken = artifacts.require('MintableToken.sol');
 const SecondBiathlonToken = artifacts.require("./SecondBiathlonToken.sol");
 
 
 let nl;
 let bn;
 let bt;
+let sn;
+let st;
 
 contract('BiathlonToken', function(accounts) {
 

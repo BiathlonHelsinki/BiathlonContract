@@ -5,11 +5,13 @@ const SecondNode = artifacts.require("./SecondNode.sol");
 const SecondBiathlonToken = artifacts.require("./SecondBiathlonToken.sol");
 const BiathlonToken = artifacts.require("./BiathlonToken.sol");
 const UpgradedNodelist = artifacts.require("./UpgradedNodelist.sol");
+import expectThrow from 'zeppelin-solidity/test/helpers/expectThrow';
 
 // ... more code
 let nl;
 let bn;
-
+let sn;
+let unl;
 
 contract('BiathlonNode', function(accounts) {
   let ownable;
@@ -47,7 +49,8 @@ contract('BiathlonNode', function(accounts) {
     bn = await BiathlonNode.deployed();
     try {
       let registration = await bn.connect_to_nodelist();
-      let new_node_count = await nl.count_nodes();
+      // let new_node_count = await nl.count_nodes();
+      await expectThrow(await nl.count_nodes())
     } catch (error) {
       const invalidJump = error.message.search('invalid opcode') >= 0;
       assert(invalidJump, "Expected throw, got '" + error + "' instead");

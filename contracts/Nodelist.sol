@@ -15,7 +15,7 @@ contract Nodelist is Ownable  {
 
 
 
-  function Nodelist() {
+  function Nodelist() public {
     current = true;
   }
 
@@ -57,7 +57,7 @@ contract Nodelist is Ownable  {
 
   }
 
-  function upgrade_self(address _to) onlyOwner returns(bool) {
+  function upgrade_self(address _to) onlyOwner public returns(bool) {
     // Allow this nodelist contract itself to migrated
     // Go through every node and set their node_address to the new one
     for(uint i = 0; i<nodes.length; i++) {

@@ -21,7 +21,7 @@ contract SecondNode is Ownable {
   event RegisterToken(address addr, string token_name);
   event UpgradeToken(address from, address to, string new_token_name);
 
-  function SecondNode(address _nodelist, string _name, string _location) {
+  function SecondNode(address _nodelist, string _name, string _location) public {
     nodelist_address = _nodelist;
     name = _name;
     location = _location;
@@ -32,7 +32,7 @@ contract SecondNode is Ownable {
     return nodelist_address;
   }
 
-  function token_is_active(address _addr) public returns(bool) {
+  function token_is_active(address _addr) public view returns(bool) {
     return tokens[_addr].active;
   }
   function count_tokens() public constant returns(uint) {
@@ -66,7 +66,7 @@ contract SecondNode is Ownable {
 
 
   function register_token(address _addr, string _name) public returns(address _a, string _n) {
-    require(sha3(_name) != sha3(''));
+    require(keccak256(_name) != keccak256(''));
     require(tokens[_addr].addr == address(0));
     Tokeninfo memory this_token = Tokeninfo(_addr, true, address(0));
     tokens[_addr] = this_token;
