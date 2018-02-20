@@ -10,44 +10,23 @@ const UpgradedNodelist = artifacts.require("./UpgradedNodelist");
 module.exports = async function(deployer) {
   var sa;
   var c;
-   deployer.deploy(Nodelist,  {from: web3.eth.accounts[8]}).then(function() {
-  //  deployer.link(Nodelist, BiathlonNode);
+   deployer.deploy(Nodelist,  {from: web3.eth.accounts[0], gasPrice: 8000000000})
+   .then(function() {
       console.log("nodelist address is " + Nodelist.address);
       return Nodelist.address;
     }).then(function() {
-      return deployer.deploy(BiathlonNode, Nodelist.address, 'Test node', 'Helsinki')
-    .then(function() {
-      return deployer.deploy(BiathlonToken, BiathlonNode.address, 'Test token', 'Tt', 2, '0x0')
+      return deployer.deploy(BiathlonNode, Nodelist.address, 'Kuusi Palaa', 'Helsinki', 'www.kuusipalaa.fi', {from: web3.eth.accounts[0], gasPrice: 8000000000})
+    })
     .then(async function() {
-       c = await BiathlonToken.deployed();
-        sa = await c.storage_address.call();
-        // console.log('sa is ' + sa);
-         let ts = await TokenStorage.at(sa);
-        // console.log('ts is ' + ts);
-         let tsowner = await ts.owner();
-         console.log('owner is ' + tsowner);
-         console.log("biathlon deploy address is " + BiathlonNode.address);
-         console.log("Token deploy address is " + BiathlonToken.address);
-        console.log("Token storage address is " + sa);
-        })
-      .then(function() {
-        return deployer.deploy(SecondNode, Nodelist.address, 'Second node', 'Elsehwere', {from: web3.eth.accounts[6]})
-      .then(function() {
-         console.log('Second node is ' + SecondNode.address);
-
-        return deployer.deploy(SecondBiathlonToken, BiathlonNode.address, 'Second test token', 'St', 2, sa)
-      .then(function() {
-        console.log("Second token deploy address is " + SecondBiathlonToken.address + ' with ' + SecondBiathlonToken.node_address);
-        return deployer.deploy(UpgradedNodelist,  {from: web3.eth.accounts[8]})
-        })
-        .then(function() {
-          console.log('Second nodelist is ' + UpgradedNodelist.address);
-        })
-      });
-    });
-    });
-    });
-  };
+      let node = await BiathlonNode.deployed()
+      return await node.connect_to_nodelist()
+    }).then(() => {
+      return deployer.deploy(BiathlonToken, BiathlonNode.address, 'Kuusi Palaa points', 'ᵽ', 0, '0x0',  {from: web3.eth.accounts[0], gasPrice: 8000000000})
+    }).then(async () => {
+      let token = await BiathlonToken.deployed()
+      return await token.register_with_node()
+    })  
+  }
 
 
 

@@ -7,6 +7,7 @@ contract BiathlonNode is Ownable {
   address public nodelist_address;
   string public name;
   string public location;
+  string public url;
   Nodelist nodelist;
 
 
@@ -21,10 +22,11 @@ contract BiathlonNode is Ownable {
   event RegisterToken(address addr, string token_name);
   event UpgradeToken(address from, address to, string new_token_name);
 
-  function BiathlonNode(address _nodelist, string _name, string _location) public {
+  function BiathlonNode(address _nodelist, string _name, string _location, string _url) public {
     nodelist_address = _nodelist;
     name = _name;
     location = _location;
+    url = url;
     nodelist = Nodelist(nodelist_address);
   }
 
